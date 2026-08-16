@@ -14,31 +14,38 @@ model = ChatGoogleGenerativeAI(
     temperature=0
 )
 
+
 # Define the structured response
 class AgentResponse(BaseModel):
     answer: str
 
+
 # Create structured model
 structured_model = model.with_structured_output(AgentResponse)
 
-# Messages
-messages = [
-    (
-        "system",
-        "You are a helpful AI assistant. "
-        "Give clear and concise answers."
-    ),
-    (
-        "human",
-        "What is an AI agent?"
-    )
-]
 
-try:
-    response = structured_model.invoke(messages)
-    print(response)
+while True:
+    user_input = input("You: ")
 
-except Exception as e:
-    print(f"Something went wrong: {e}")
-    
-    
+    if user_input.lower() in ["q", "quit"]:
+        print("Goodbye! 👋")
+        break
+
+    messages = [
+        (
+            "system",
+            "You are a helpful AI assistant. "
+            "Give clear and concise answers."
+        ),
+        (
+            "human",
+            user_input
+        )
+    ]
+
+    try:
+        response = structured_model.invoke(messages)
+        print(f"Agent: {response.answer}")
+
+    except Exception as e:
+        print(f"Something went wrong: {e}")
